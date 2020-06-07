@@ -2,7 +2,6 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -10,30 +9,32 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name'
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token',
-    ];
+    //TODO when handled auth add remember_token to hidden fields
+    protected $hidden = [];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    protected $casts = [];
+
+    public function rewards()
+    {
+        return $this->hasMany('App\Reward');
+    }
+
+    public function boxes()
+    {
+        return $this->hasMany('App\Box');
+    }
+
+    public function runes()
+    {
+        return $this->hasMany('App\Rune');
+    }
+
+    public static function getForToken($token)
+    {
+        return self::where('remember_token', $token)->first();
+    }
 }
